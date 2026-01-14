@@ -1,26 +1,34 @@
-let qrImg = document.querySelector("#qr-image");
-let imgBox = document.querySelector(".image-box"); 
-let qrText = document.querySelector("#qr-text");
-let qrButton = document.querySelector("#qr-button");
+const text = document.getElementById("qr-text");
+const size = document.getElementById("qr-size");
+const color = document.getElementById("qr-color");
+const img = document.getElementById("qr-image");
+const box = document.querySelector(".qr-box");
+const download = document.getElementById("downloadBtn");
+const toggle = document.getElementById("themeToggle");
+const generateBtn = document.getElementById("generateBtn");
 
+generateBtn.addEventListener("click", () => {
+  if (!text.value.trim()) {
+    text.classList.remove("error");
+    void text.offsetWidth;
+    text.classList.add("error");
 
-qrButton.addEventListener("click",()=> {
-    genrateQR();
-})
+    text.focus();
+    return;
+  }
 
+  const hex = color.value.substring(1);
 
-function genrateQR() {
+  img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size.value}x${size.value}&color=${hex}&data=${encodeURIComponent(text.value)}`;
 
+  img.onload = () => {
+    box.classList.add("show");
+    download.href = img.src;
+  };
+});
 
-    if (qrText.value.length > 0) {
-        qrImg.src ="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" +qrText.value;
-        imgBox.classList.add("show-img");
-    } else {
-        qrText.classList.add('error');
-       
-        setTimeout(() => {
-           qrText.classList.remove('error'); 
-        }, 1000);
-    }
-    
-}
+/* dark/light mode */
+toggle.addEventListener("click", () => {
+  document.body.classList.toggle("light");
+  toggle.textContent = document.body.classList.contains("light") ? "☀️" : "🌙";
+});
